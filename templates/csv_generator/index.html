@@ -1,5 +1,65 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Hello World!</h1>
+  <div class="">
+    <div class="w-75">
+      <span class="h3">Data schemes </span>
+      <a href="#" class="btn custom_success_button float-end">New schema</a>
+    </div>
+    <br>
+
+    <table class="table table-bordered w-75">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Title</th>
+          <th scope="col">Modified</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      
+      <tbody>
+        <tr>
+          <th scope="row">1</th>
+          <td><a href="#" class="text-decoration-none">Customers</a></td>
+          <td>2020-03-16</td>
+          <td>
+            <a href="#" class="text-decoration-none">Edit scheme</a>
+            <a href="#" class="text-decoration-none text-danger ms-2">Delete</a>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">1</th>
+          <td><a href="#" class="text-decoration-none">Customers</a></td>
+          <td>2020-03-16</td>
+          <td>
+            <a href="#" class="text-decoration-none">Edit scheme</a>
+            <a href="#" class="text-decoration-none text-danger ms-2">Delete</a>
+          </td>
+        </tr>
+        <tr>
+          <th scope="row">1</th>
+          <td><a href="#" class="text-decoration-none">Customers</a></td>
+          <td>2020-03-16</td>
+          <td>
+            <a href="#" class="text-decoration-none">Edit scheme</a>
+            <a href="#" class="text-decoration-none text-danger ms-2">Delete</a>
+          </td>
+        </tr>
+        
+        {% for schema in schemas %}
+          <tr>
+          <th scope="row">{{ schema.id }}</th>
+          <td>{{ schema.title }}</td>
+          <td>{{ schema.modified }}</td>
+          <td>
+            <a href="#" class="text-decoration-none">Edit scheme</a>
+            <a href="#" class="text-decoration-none">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+
+      </tbody>
+    </table>
+  </div>
 {% endblock %}

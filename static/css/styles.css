@@ -1,3 +1,5 @@
-.header_text {
-    color: gray;
+.custom_success_button {
+    background: #5CB85C;
+    border: #5CB85C solid 2px;
+    color: white;
 }

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+
+  <h3>Sample schema</h3>
+  <br>
+    <table class="table table-bordered w-50">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Column name</th>
+          <th scope="col">Column type</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for column in schema.columns.all %}
+        <tr>
+          <th scope="row">{{ column.order }}</th>
+          <td>{{ column.column_name }}</td>
+          <td>{{ column.type }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  <div class="w-75 row">
+    <span class="h3 col-md">Data sets</span>
+    <span class="col-md-auto mt-1">Rows: </span>
+    <form action="" method="post" class="col-md-auto form-row d-inline-flex">
+      {% csrf_token %}
+      <span class="col-md-3">
+        {{ form.rows|as_crispy_field }}
+      </span>
+      <button id="generate_data" class="btn btn-success float-end col-md-auto h-75 ms-3">
+        Generate data
+      </button>
+    </form>
+  </div>
+  <table class="table table-bordered w-50">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Created</th>
+          <th scope="col">Status</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+
+      <tbody id="table">
+        {% for dataset in schema.datasets.all %}
+        <tr>
+          <th scope="row">{{ dataset.number_for_this_schema }}</th>
+          <td>{{ dataset.created|date:"Y-m-d" }}</td>
+          <td>
+            {% if dataset.status == "Ready" %}
+              <span class="btn btn-success btn-sm pe-none" aria-pressed="false">{{ dataset.status }}</span>
+            {% else %}
+              <span class="btn btn-secondary btn-sm pe-none" aria-pressed="false">{{ dataset.status }}</span>
+            {% endif %} 
+
+          </td>
+          <td>
+            {% if dataset.status == "Ready" %}
+              <a href="{{ dataset.file.url }}" download class="text-decoration-none">Download</a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+{% endblock %}

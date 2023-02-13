@@ -1,0 +1,36 @@
+{% load crispy_forms_filters %}
+
+<div hx-target="this" class="row g-3 w-75">
+
+  <div class="col-md-3">
+      {{ form.column_name|as_crispy_field }}
+  </div>
+
+  <div class="col-md-3">
+    {{ form.type|as_crispy_field }}
+  </div>
+
+  <div class="col-md-1">
+    {% if form.from %}
+      {{ form.from|as_crispy_field }}
+    {% endif %}
+  </div>
+
+  <div class="col-md-1">
+    {% if form.to %}
+      {{ form.from|as_crispy_field }}
+    {% endif %}
+  </div>
+
+  <div class="col-md-2 d-inline">
+    {{ form.order|as_crispy_field }}
+  </div>
+  <div class="col align-self-center mt-4">
+    <a hx-post="{% url 'csv_generator:delete-form' %}" hx-swap="outerHTML" class="btn text-danger">
+      Delete
+    </a>
+
+  </div>
+
+
+</div>

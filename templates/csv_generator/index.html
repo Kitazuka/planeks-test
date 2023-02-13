@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <div class="">
+  <div>
     <div class="w-75">
-      <span class="h3">Data schemes </span>
-      <a href="#" class="btn custom_success_button float-end">New schema</a>
+      <span class="h3">Data schemes</span>
+      <a href="{% url 'csv_generator:create_schema' %}" class="btn custom_success_button float-end">New schema</a>
     </div>
     <br>
 
@@ -17,44 +17,20 @@
           <th scope="col">Actions</th>
         </tr>
       </thead>
-      
+
       <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td><a href="#" class="text-decoration-none">Customers</a></td>
-          <td>2020-03-16</td>
-          <td>
-            <a href="#" class="text-decoration-none">Edit scheme</a>
-            <a href="#" class="text-decoration-none text-danger ms-2">Delete</a>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">1</th>
-          <td><a href="#" class="text-decoration-none">Customers</a></td>
-          <td>2020-03-16</td>
-          <td>
-            <a href="#" class="text-decoration-none">Edit scheme</a>
-            <a href="#" class="text-decoration-none text-danger ms-2">Delete</a>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">1</th>
-          <td><a href="#" class="text-decoration-none">Customers</a></td>
-          <td>2020-03-16</td>
-          <td>
-            <a href="#" class="text-decoration-none">Edit scheme</a>
-            <a href="#" class="text-decoration-none text-danger ms-2">Delete</a>
-          </td>
-        </tr>
-        
         {% for schema in schemas %}
           <tr>
           <th scope="row">{{ schema.id }}</th>
-          <td>{{ schema.title }}</td>
+          <td>
+            <a href="{% url 'csv_generator:schema-detail' pk=schema.id %}" class="text-decoration-none">
+              {{ schema.name }}
+            </a>
+          </td>
           <td>{{ schema.modified }}</td>
           <td>
-            <a href="#" class="text-decoration-none">Edit scheme</a>
-            <a href="#" class="text-decoration-none">Delete</a>
+            <a href="{% url 'csv_generator:schema-update' pk=schema.id %}" class="text-decoration-none">Edit scheme</a>
+            <a href="{% url 'csv_generator:schema-delete' pk=schema.id %}" class="text-decoration-none text-danger ms-2">Delete</a>
           </td>
         </tr>
         {% endfor %}

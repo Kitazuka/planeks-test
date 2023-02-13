@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+  <form action="" method="post">
+  <div class="w-75">
+    <span class="h4">New schema</span>
+    <input type="submit" value="Submit" class="btn custom_success_button rounded-3 float-end">
+  </div>
+
+    {% csrf_token %}
+    <div class="w-50">
+      {{ form.name|as_crispy_field}}
+      {{ form.separator|as_crispy_field}}
+      {{ form.string_character|as_crispy_field}}
+    </div>
+    {% if not object %}
+      <h5>Schema columns</h5>
+
+      <div class="center-block schema_columns_container w-75">
+        <div class="m-4">
+          <div id="schemacolumnsforms"></div>
+          <button hx-get="{% url 'csv_generator:schema-columns-form' %}" hx-swap="beforeend" hx-target="#schemacolumnsforms" class="btn btn-primary rounded-3">
+              Add column
+            </button>
+        </div>
+      </div>
+
+
+    {% endif %}
+  </form>
+
+{% endblock %}

@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+from csv_generator.models import Schema, Columns, DataSets
+
+admin.site.register(Schema)
+admin.site.register(Columns)
+admin.site.register(DataSets)

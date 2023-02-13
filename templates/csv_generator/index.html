@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div>
+    <div class="w-75">
+      <span class="h3">Data schemes</span>
+      <a href="{% url 'csv_generator:create_schema' %}" class="btn custom_success_button float-end">New schema</a>
+    </div>
+    <br>
+
+    <table class="table table-bordered w-75">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Title</th>
+          <th scope="col">Modified</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for schema in schemas %}
+          <tr>
+          <th scope="row">{{ schema.id }}</th>
+          <td>
+            <a href="{% url 'csv_generator:schema-detail' pk=schema.id %}" class="text-decoration-none">
+              {{ schema.name }}
+            </a>
+          </td>
+          <td>{{ schema.modified }}</td>
+          <td>
+            <a href="{% url 'csv_generator:schema-update' pk=schema.id %}" class="text-decoration-none">Edit scheme</a>
+            <a href="{% url 'csv_generator:schema-delete' pk=schema.id %}" class="text-decoration-none text-danger ms-2">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+
+  <div class="login_container center-block">
+    <h1 class="text-center mt-5 pb-1">Login</h1>
+    <div class="container d-flex justify-content-center">
+
+      <form action="{% url 'login' %}" method="post" class="login bg-login p-5 rounded-3 form-floating">
+        {% csrf_token %}
+        {{form.username|as_crispy_field}}
+        {{form.password|as_crispy_field}}
+        <input type="submit" value="Login" class="btn btn-primary rounded-4 float-end">
+      </form>
+
+
+
+    </div>
+  </div>
+  {% if form.errors %}
+      <p style="color: #FF4343" class="text-center">Your username and password didn't match. Please try again.</p>
+    {% endif %}
+
+
+{% endblock %}

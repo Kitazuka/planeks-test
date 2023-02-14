@@ -15,7 +15,14 @@
       {{ form.string_character|as_crispy_field}}
     </div>
     {% if not object %}
-      <h5>Schema columns</h5>
+
+      <div class="row g-3 w-75 ms-3">
+        <h5>Schema columns</h5>
+        {% for i in '12345'|make_list %}
+          {% include "partial/schema_columns_form.html" with form=columns_form %}
+        {% endfor %}
+      </div>
+      <br>
 
       <div class="center-block schema_columns_container w-75">
         <div class="m-4">

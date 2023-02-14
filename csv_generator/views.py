@@ -7,48 +7,14 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
 from django.views.generic.edit import FormMixin
-from faker import Faker
-import csv
 
+from csv_generator.data_generator import generate_dataset, create_schema_columns
 from csv_generator.forms import SchemaCreateForm, ColumnsForm, RowsForm
-from csv_generator.models import Schema, Columns, DataSets
-from planeks_test.settings import MEDIA_ROOT
-
-CONVERTED_COLUMN_TYPES = {
-    "Full name": "name",
-    "Job": "job",
-    "Email": "email",
-    "Domain name": "domain_name",
-    "Phone number": "phone_number",
-    "Company": "company",
-    "Text": "text",
-    "Integer": "random_int",
-    "Address": "address",
-    "Date": "date",
-}
+from csv_generator.models import Schema, DataSets
 
 
 def is_ajax(request):
-    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
-
-
-def sort_by_order(order: list, data: list) -> list:
-    return [x for _, x in sorted(zip(order, data))]
-
-
-def create_schema_columns(schema: Schema, data: dict) -> None:
-    old_order = data["order"]
-    types = sort_by_order(old_order, data["type"])
-    column_name = sort_by_order(old_order, data["column_name"])
-    order = sort_by_order(old_order, old_order)
-
-    for index in range(len(order)):
-        Columns.objects.create(
-            column_name=column_name[index],
-            type=types[index],
-            order=order[index],
-            schema=schema,
-        )
+    return request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest"
 
 
 @login_required
@@ -62,6 +28,11 @@ class SchemaCreateView(LoginRequiredMixin, generic.CreateView):
     model = Schema
     form_class = SchemaCreateForm
     success_url = reverse_lazy("csv_generator:index")
+
+    def get_context_data(self, **kwargs):
+        context = super(SchemaCreateView, self).get_context_data(**kwargs)
+        context["columns_form"] = ColumnsForm
+        return context
 
     def post(self, request, *args, **kwargs):
         form = SchemaCreateForm(request.POST)
@@ -104,65 +75,28 @@ class SchemaDetailView(LoginRequiredMixin, generic.DetailView, FormMixin):
     form_class = RowsForm
     model = Schema
 
-    def post(self, request, *args, **kwargs):
+
+def create_dataset(request):
+    if is_ajax(request) and request.method == "POST":
+        schema_id = request.POST["schema"]
+        schema = Schema.objects.get(id=schema_id)
+
         form = RowsForm(request.POST)
-        schema = Schema.objects.get(id=kwargs["pk"])
-        context = {"schema": schema, "form": form}
-        print(is_ajax(request), form.is_valid())
         if form.is_valid():
-            if is_ajax(request):
-                form = RowsForm(request.POST)
-                text = self.request.POST.get("text_data")
+            rows = form.data["rows"]
+            number_for_this_schema = (
+                len(DataSets.objects.filter(schema=schema)) + 1
+            )
+            dataset = DataSets.objects.create(
+                status="Processing",
+                schema=schema,
+                number_for_this_schema=number_for_this_schema,
+            )
+            dataset_info = generate_dataset(schema, dataset, rows)
 
-                number_for_this_schema = (
-                        len(DataSets.objects.filter(schema=schema)) + 1
-                )
-                dataset = DataSets.objects.create(
-                    status="Processing",
-                    schema=schema,
-                    number_for_this_schema=number_for_this_schema,
-                )
-
-                rows = form.data["rows"]
-                print(request.POST)
-                print("0-0-0--00-0-0-0-0-0")
-
-                file_path = os.path.join(
-                    f"{MEDIA_ROOT}",
-                    f"{schema.name}_{dataset.number_for_this_schema}.csv",
-                )
-                columns = [column.type for column in schema.columns.all()]
-
-                with open(file_path, "w", newline="") as file:
-                    writer = csv.writer(file, delimiter=schema.separator)
-                    writer.writerow(columns)
-                for _ in range(int(rows)):
-                    generate_data(columns, file_path, delimiter=schema.separator)
-                dataset.file = file_path
-                dataset.status = "Ready"
-                dataset.save()
-                dataset_info = {
-                    "id": dataset.number_for_this_schema,
-                    "created": dataset.created,
-                    "status": dataset.status,
-                }
-
-                return JsonResponse({"dataset": dataset_info}, status=200)
-            else:
-                return render(request, "csv_generator/schema_detail.html", context)
-
-
-def generate_data(
-    columns: list[Columns], file_path: str, delimiter: str
-) -> None:
-    fake = Faker()
-    info = []
-    for column in columns:
-        value = getattr(fake, CONVERTED_COLUMN_TYPES[column])
-        info.append(value())
-    with open(file_path, "a", newline="") as file:
-        writer = csv.writer(file, delimiter=delimiter)
-        writer.writerow(info)
+            return JsonResponse({"dataset": dataset_info}, status=200)
+        return JsonResponse({"error": form.errors}, status=400)
+    return JsonResponse({"error": ""}, status=400)
 
 
 def create_schema_form(request):

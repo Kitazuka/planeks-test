@@ -12,7 +12,7 @@ pip install -r requirements.txt
 3. Make migrations and run server:
 ```shell
 python manage.py migrate
-python manage.py createsuperuser
+python manage.py createsuperuser # to create user
 python manage.py runserver
 ```
 4. Create superuser using this command:

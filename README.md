@@ -15,7 +15,3 @@ python manage.py migrate
 python manage.py createsuperuser # to create user
 python manage.py runserver
 ```
-4. Create superuser using this command:
-```shell
-python manage.py createsuperuser
-```

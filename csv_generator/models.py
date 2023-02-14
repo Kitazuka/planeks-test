@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
-
 COLUMN_TYPES = (
     ("Full name", "Full name"),
     ("Job", "Job"),
@@ -62,3 +61,11 @@ class DataSets(models.Model):
     file = models.FileField(upload_to="media", null=True)
     schema = models.ForeignKey(Schema, on_delete=models.CASCADE, related_name="datasets")
     number_for_this_schema = models.PositiveIntegerField()
+
+    def file_link(self) -> str:
+        if self.file:
+            return self.file.url
+        else:
+            return "No attachment"
+
+    file_link.allow_tags = True

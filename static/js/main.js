@@ -1,22 +1,21 @@
 $(document).ready(function(){
 
-    $("#generate_data").click(function(){
+    $("#generate_data_form").submit(function(e){
 
-        var csrf = $("input[name=csrfmiddlewaretoken]").val();
+        e.preventDefault();
+        var serializedData = $(this).serialize();
 
         $.ajax({
-            url: "",
+            url: "/post/ajax/dataset/",
             type: "post",
-            data: {
-                rows: $("form").rows,
-                csrfmiddlewaretoken: csrf
-            },
+            data: serializedData,
             success: function(response) {
+                $("#generate_data_form").trigger('reset');
                 $("#table").append("<tr>" +
                     "<th scope='col'>" + response.dataset.id + "</th>" +
-                    "<th>" + response.dataset.created + "</th>" +
-                    "<th><span class='btn btn-secondary btn-sm pe-none' aria-pressed='false'>" + response.dataset.status + "</span></th>" +
-
+                    "<th class='fw-normal'>" + response.dataset.created + "</th>" +
+                    "<th><span class='btn btn-success btn-sm pe-none' aria-pressed='false'>" + response.dataset.status + "</span></th>" +
+                    `<th><a href="${response.dataset.url}" download class="text-decoration-none fw-normal">` + "Download" + "</a></th>" +
                     "</tr>")
             }
         });

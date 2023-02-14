@@ -28,15 +28,16 @@
   <div class="w-75 row">
     <span class="h3 col-md">Data sets</span>
     <span class="col-md-auto mt-1">Rows: </span>
-    <form action="" method="post" class="col-md-auto form-row d-inline-flex">
+
+    <form class="col-md-auto form-row d-inline-flex" id="generate_data_form">
       {% csrf_token %}
       <span class="col-md-3">
         {{ form.rows|as_crispy_field }}
       </span>
-      <button id="generate_data" class="btn btn-success float-end col-md-auto h-75 ms-3">
-        Generate data
-      </button>
+      <input type="hidden" name="schema" value={{ schema.id }} />
+      <input type="submit" id="generate_data" class="btn btn-success float-end col-md-auto h-75 ms-3" value="Create dataset">
     </form>
+
   </div>
   <table class="table table-bordered w-50">
       <thead>

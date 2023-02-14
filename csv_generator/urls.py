@@ -1,7 +1,7 @@
 from django.urls import path
 
 from csv_generator.views import index, SchemaCreateView, create_schema_form, delete_form, SchemaDetailView, \
-    SchemaDeleteView, SchemaUpdateView
+    SchemaDeleteView, SchemaUpdateView, create_dataset
 
 urlpatterns = [
     path("", index, name="index",),
@@ -15,6 +15,7 @@ urlpatterns = [
         SchemaDeleteView.as_view(),
         name="schema-delete"
     ),
+    path("post/ajax/dataset/", create_dataset, name="create-dataset"),
 ]
 
 app_name = "csv_generator"
